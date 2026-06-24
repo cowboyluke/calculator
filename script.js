@@ -16,25 +16,27 @@ function divide(a,b) {
     return a/b;
 }
 
+
 let num1 = undefined;
 let num2 = undefined;
 let operand = undefined;
-let startSecondNumber = false;
-let equationLength = 0;
+let numberCounter = 0;
+let nextNumber = false;
+
 
 function operate(n1, n2, op) {
     switch (op) {
         case "+":
-            add(n1, n2);
+            return add(n1, n2);
             break;
         case "-":
-            subtract(n1, n2);
+            return subtract(n1, n2);
             break;
         case "*":
-            multiply(n1, n2);
+            return multiply(n1, n2);
             break;
         case "/":
-            divide(n1, n2);
+            return divide(n1, n2);
             break;
         default:
             console.log("wtf");
@@ -76,11 +78,13 @@ anyButton.forEach(btn => {
 
 numButton.forEach(btn => {
     btn.addEventListener("click", () => {
-        if (startSecondNumber) {
+        if (nextNumber) {
+            nextNumber = false;
             display.textContent = "";
         }
     })
-}); 
+});
+
 
 one.addEventListener("click", () => {
     display.textContent += "1";
@@ -115,32 +119,78 @@ zero.addEventListener("click", () => {
 
 
 multiplier.addEventListener("click", () => {
-    num1 = Number(display.textContent);
-    operand = "*";
-    startSecondNumber = true;
-    equationLength++;
+    if (numberCounter < 1) {
+        num1 = Number(display.textContent);    
+        operand = "*";
+        nextNumber = true;
+        numberCounter++;
+    } else {
+        num2 = Number(display.textContent);
+        operand = "*";
+        display.textContent = String(operate(num1, num2, operand))
+        num1 = Number(display.textContent);
+        num2 = undefined;    
+        nextNumber = true;
+        numberCounter++;
+    }
 });
 divider.addEventListener("click", () => {
-    num1 = Number(display.textContent);
-    operand = "/";
-    startSecondNumber = true;
-    equationLength++;
+    if (numberCounter < 1) {
+        num1 = Number(display.textContent);    
+        operand = "/";
+        nextNumber = true;
+        numberCounter++;
+    } else {
+        num2 = Number(display.textContent);
+        operand = "/";
+        display.textContent = String(operate(num1, num2, operand))
+        num1 = Number(display.textContent);
+        num2 = undefined;    
+        nextNumber = true;
+        numberCounter++;
+    }
 });
 plus.addEventListener("click", () => {
-    num1 = Number(display.textContent);
-    operand = "+";
-    startSecondNumber = true;
-    equationLength++;
+    if (numberCounter < 1) {
+        num1 = Number(display.textContent);    
+        operand = "+";
+        nextNumber = true;
+        numberCounter++;
+    } else {
+        num2 = Number(display.textContent);
+        operand = "+";
+        display.textContent = String(operate(num1, num2, operand))
+        num1 = Number(display.textContent);
+        num2 = undefined;    
+        nextNumber = true;
+        numberCounter++;
+    }
 });
 minus.addEventListener("click", () => {
-    num1 = Number(display.textContent);
-    operand = "-";
-    startSecondNumber = true;
-    equationLength++;
+    if (numberCounter < 1) {
+        num1 = Number(display.textContent);    
+        operand = "-";
+        nextNumber = true;
+        numberCounter++;
+    } else {
+        num2 = Number(display.textContent);
+        operand = "-";
+        display.textContent = String(operate(num1, num2, operand))
+        num1 = Number(display.textContent);
+        num2 = undefined;    
+        nextNumber = true;
+        numberCounter++;
+    }
 });
 
-// i am in the middle of using equation length to allow 1+1+1+...+1=, as well as implementing start second number to allow the second number to be imputted while pressing a number key (but you can change the operand). i also want to have the active operand highlighted.
-
-equals.addEventListener("click", () => {
-
+equals.addEventListener("click", () => { //want to add the ability to keep pressing this and repeating the operation
+        num2 = Number(display.textContent);
+        display.textContent = String(operate(num1, num2, operand))
+        num1 = undefined;
+        num2 = undefined;
+        operand = undefined;    
+        numberCounter = 0;
 });
+
+//next steps are to add basic functionality to all the dark grey buttons
+//once that is done, I will move on to only one decimal, max characters on screen, keyboard support and bugfixing
