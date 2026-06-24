@@ -44,6 +44,34 @@ function operate(n1, n2, op) {
     }
 }
 
+function displayResults(number) {
+    if (String(number).length < 11) {
+        display.textContent = String(number);
+    } else if (number > 0) { //big number scientific exponent
+        let base10decimal = number;
+        let exponent = 0;
+        for (let i = 0; i < (String(number).length - 1); i++) {
+            base10decimal = base10decimal / 10;
+            exponent++;
+        };
+        base10decimal = (Math.round(base10decimal*1000000))/1000000; //rounds to 6 digits, plus the e+99, makes it total 10 digits
+        display.textContent = String(base10decimal) + "e+" + String(exponent);
+    } else if (number < 0) { //small number scientific exponent
+
+    }
+}
+
+function getNumber(str) {
+    if (str.includes("e+")) {
+        let decimal = str.slice(0, str.indexOf("e"));
+        let exponent = str.slice(str.indexOf("+") +1); //done logic to create base 10, working on logic now to grab base 10. once its done will convert to negative exponents too
+    } else if (str.includes("e-")) {
+
+    } else {
+    return Number(str);
+    }
+}
+
 const anyButton = document.querySelectorAll("button"); //to get rid of welcome :) after any button press
 const numButton = document.querySelectorAll(".numButtons");
 const display = document.querySelector(".numbers"); //edit the text content here to change the numbers
@@ -120,15 +148,15 @@ zero.addEventListener("click", () => {
 
 multiplier.addEventListener("click", () => {
     if (numberCounter < 1) {
-        num1 = Number(display.textContent);    
+        num1 = getNumber(display.textContent);    
         operand = "*";
         nextNumber = true;
         numberCounter++;
     } else {
-        num2 = Number(display.textContent);
+        num2 = getNumber(display.textContent);
+        display.textContent = String(operate(num1, num2, operand));
         operand = "*";
-        display.textContent = String(operate(num1, num2, operand))
-        num1 = Number(display.textContent);
+        num1 = getNumber(display.textContent);
         num2 = undefined;    
         nextNumber = true;
         numberCounter++;
@@ -136,15 +164,15 @@ multiplier.addEventListener("click", () => {
 });
 divider.addEventListener("click", () => {
     if (numberCounter < 1) {
-        num1 = Number(display.textContent);    
+        num1 = getNumber(display.textContent);    
         operand = "/";
         nextNumber = true;
         numberCounter++;
     } else {
-        num2 = Number(display.textContent);
+        num2 = getNumber(display.textContent);
+        display.textContent = String(operate(num1, num2, operand));
         operand = "/";
-        display.textContent = String(operate(num1, num2, operand))
-        num1 = Number(display.textContent);
+        num1 = getNumber(display.textContent);
         num2 = undefined;    
         nextNumber = true;
         numberCounter++;
@@ -152,15 +180,15 @@ divider.addEventListener("click", () => {
 });
 plus.addEventListener("click", () => {
     if (numberCounter < 1) {
-        num1 = Number(display.textContent);    
+        num1 = getNumber(display.textContent);    
         operand = "+";
         nextNumber = true;
         numberCounter++;
     } else {
-        num2 = Number(display.textContent);
+        num2 = getNumber(display.textContent);
+        display.textContent = String(operate(num1, num2, operand));
         operand = "+";
-        display.textContent = String(operate(num1, num2, operand))
-        num1 = Number(display.textContent);
+        num1 = getNumber(display.textContent);
         num2 = undefined;    
         nextNumber = true;
         numberCounter++;
@@ -168,15 +196,15 @@ plus.addEventListener("click", () => {
 });
 minus.addEventListener("click", () => {
     if (numberCounter < 1) {
-        num1 = Number(display.textContent);    
+        num1 = getNumber(display.textContent);    
         operand = "-";
         nextNumber = true;
         numberCounter++;
     } else {
-        num2 = Number(display.textContent);
+        num2 = getNumber(display.textContent);
+        display.textContent = String(operate(num1, num2, operand));
         operand = "-";
-        display.textContent = String(operate(num1, num2, operand))
-        num1 = Number(display.textContent);
+        num1 = getNumber(display.textContent);
         num2 = undefined;    
         nextNumber = true;
         numberCounter++;
@@ -184,7 +212,7 @@ minus.addEventListener("click", () => {
 });
 
 equals.addEventListener("click", () => { //want to add the ability to keep pressing this and repeating the operation
-        num2 = Number(display.textContent);
+        num2 = getNumber(display.textContent);
         display.textContent = String(operate(num1, num2, operand))
         num1 = undefined;
         num2 = undefined;
