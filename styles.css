@@ -66,3 +66,52 @@
 .backspace {
     width: 20%;
 }
+
+div.info {
+    display: flex;
+    justify-content: center;
+}
+
+div.info2 {
+    margin-top: 25px;
+    background-color: lightgrey;
+    outline-style: solid;
+    outline-width: 1px;
+    outline-color: black;
+    font-family: Courier, "Courier New", monospace;
+    cursor: pointer;
+}
+
+div.info2:active {
+  transform: translateY(0.5px) scale(0.999);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.myModal {
+    background-color: lightgrey; 
+    outline-style: solid; 
+    outline-width: 0.25px; 
+    outline-color: black; 
+    font-family: Courier, monospace; 
+    cursor: pointer;
+    width: max-content;
+}
+
+.myModal:active {
+  transform: translateY(0.5px) scale(0.999);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+dialog {
+    background-color: white;
+    outline-style: solid;
+    outline-width: 0.5px;
+    outline-color: black;
+    font-family: Arial, sans-serif;
+}
+
+dialog::backdrop {
+    backdrop-filter: blur(6px); 
+    -webkit-backdrop-filter: blur(6px); /*Apparantly Old Safari Support?*/
+    background-color: rgba(0, 0, 0, 0.4); 
+}

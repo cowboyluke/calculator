@@ -308,9 +308,11 @@ allClear.addEventListener("click", () => {
     display.textContent = "";
     });
 backspace.addEventListener("click", () => {
-        let str = String(getNumber(display.textContent));
-        str = str.slice(0, str.length - 1);
-        displayResults(str);
+        if (!(nextNumber)){
+            let str = String(getNumber(display.textContent));
+            str = str.slice(0, str.length - 1);
+            displayResults(str);
+        }
     });
 decimal.addEventListener("click", () => {
         let num = getNumber(display.textContent);
@@ -343,7 +345,7 @@ window.addEventListener("keydown", (eventobj) => {
         nine.click();
     } else if (eventobj.key === "0") {
         zero.click();
-    } else if (eventobj.key === "*") {
+    } else if (eventobj.key === "*" || eventobj.key === "x" || eventobj.key === "X") {
         multiplier.click();
     } else if (eventobj.key === "/") {
         divider.click();
@@ -367,4 +369,15 @@ window.addEventListener("keydown", (eventobj) => {
     } else if (eventobj.key === ".") {
         decimal.click();
     }
+});
+
+const infoButton = document.querySelector(".info2");
+infoButton.addEventListener("click", () => {
+    document.querySelector(".myModalWindow").showModal();
+    //alert(`Use the number keys to input numbers\nUse "*" or "X" for multiply\nUse "/" to divide\nUse "+" to add\nUse "-" to subtract\nUse "=" or "Enter" to equals\nHold "Shift" and press "-" to make it negative\nHold "Shift" and press "Enter" to Clear All\nUse "." to add a decimal\nPress "Backspace" to remove a character`);
+});
+
+const closeButton = document.querySelector(".myModal");
+closeButton.addEventListener("click", () => {
+    document.querySelector(".myModalWindow").close()
 });
