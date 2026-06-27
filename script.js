@@ -51,41 +51,50 @@ function operate(n1, n2, op) {
 }
 
 function displayResults(number) {
-    if (String(number).length < 11) {
+    if (String(number).length < 10) { //js math bullshit misses this
         display.textContent = String(number);
     } else if (Math.abs(number) > (1 * 10 ** 9)) { //big number scientific exponent
         let base10decimal = number;
-        let exponent = 0;
-        let decimalPlaces = String(number).length;
-        for (let i = 0; i < (decimalPlaces - 1); i++) {
-            base10decimal = base10decimal / 10;
-            exponent++;
-        };
-        base10decimal = (Math.round(base10decimal*1000000))/1000000; //rounds to 6 digits, plus the e+99, makes it total 10 digits
-        display.textContent = String(base10decimal) + "e+" + String(exponent);
+        let exponent = Math.floor(Math.log10(Math.abs(number)));
+            if (exponent > 99) {
+                if (number > 0) {
+                display.textContent = "9.99999e+99";
+                } else {
+                display.textContent = "-9.99999e+99";
+                }
+            } else {
+        base10decimal = base10decimal/(10**exponent); 
+        base10decimal = base10decimal.toFixed(5);//rounds to 6 digits total, plus the e+99, makes it total 10 digits
+        display.textContent = String(Number(base10decimal)) + "e+" + String(exponent);
+            }
     } else if (Math.abs(number) < (1 * 10 ** -9)) { //small number scientific exponent
         let base10decimal = number;
-        let exponent = 0;
-        let decimalPlaces = String(number).length;
-        if (decimalPlaces > 100) {
-            decimalPlaces = 100; //rounds off irrational numbers
-        }
-        for (let i = 0; i < (decimalPlaces - 1); i++) {
-            base10decimal = base10decimal * 10;
-            exponent++;
-        };
-        base10decimal = (Math.round(base10decimal*1000000))/1000000; //rounds to 6 digits, plus the e+99, makes it total 10 digits
-        display.textContent = String(base10decimal) + "e-" + String(exponent);
+        let exponent = Math.floor(Math.log10(Math.abs(number)));
+            if (exponent < -99) {
+                if (number > 0) {
+                display.textContent = "9.99999e-99";
+                } else {
+                display.textContent = "-9.99999e-99";
+                }
+            } else {
+        base10decimal = base10decimal/(10**exponent); 
+        base10decimal = base10decimal.toFixed(5);//rounds to 6 digits total, plus the e+99, makes it total 10 digits
+        display.textContent = String(Number(base10decimal)) + "e-" + String(Math.abs(exponent));
+            }
     } else {
-            if (Math.abs(number) > 1) { //if it has something in the one's digit
+            if (!(String(number).includes("."))) {
+                display.textContent = String(number); //is this the FIX??????????????????????????????????????????????????????????????/
+            } else if (Math.abs(number) > 1) { //if it has something in the one's digit
                 let intStr = String(number).slice(0, String(number).indexOf("."));
                 let decStr = String(number).slice(String(number).indexOf("."));
                 decStr = "0" + decStr;
-                let decRounding = (10 - intStr.length) - 1;
-                let dec = (Math.round(Number(decStr)*10**decRounding))/10**decRounding;
+                let decRounding = (10 - intStr.length) - 2; //its -2 cuz of the .
+                let dec = Number(Number(decStr).toFixed(decRounding));
                 display.textContent = String(Number(intStr) + dec);
             } else {    //if its one's digit is zero
-                display.textContent = String((Math.round(number*(10**9)))/(10**9));
+                let x = String(number.toFixed(6));
+                x = Number(x); //gets rid of random zeros?
+                display.textContent = String(x);
             } 
         }
 }
@@ -103,6 +112,8 @@ function getNumber(str) {
         decimal = Number(decimal);
         exponent = Number(exponent) * (-1);
         return  decimal*(10**exponent);
+    } else if (display.textContent === "") {
+        return 0;
     } else {
         return Number(str);
     }
@@ -196,7 +207,6 @@ multiplier.addEventListener("click", () => {
         displayResults(operate(num1, num2, operand));
         num1 = getNumber(display.textContent);
         num2 = undefined;
-
     }        
         nextNumber = true;
         numberCounter++;
@@ -251,20 +261,110 @@ minus.addEventListener("click", () => {
 });
 
 equals.addEventListener("click", () => { //want to add the ability to keep pressing this and repeating the operation
-        if (equalsCounter < 1) {
-            num2 = getNumber(display.textContent);
-            num2e = num2;
-            displayResults(operate(num1, num2, operand));
-            equalsCounter++;
-        } else { //the repetative equals pressing case
-            num1e = getNumber(display.textContent);
-            displayResults(operate(num1e, num2e, operande));
-        }
-            num1 = undefined;
-            num2 = undefined;
-            operand = undefined;    
-            numberCounter = 0;
+             if (equalsCounter < 1) {
+                if (operand != undefined && display.textContent != "") { //to prevent bugs if you press the equals with not enough info
+                    num2 = getNumber(display.textContent);
+                    if ((num2 === 0 && operand === "/")) {
+                        display.textContent = ":(";
+                    } else {
+                        num2e = num2;
+                        displayResults(operate(num1, num2, operand));
+                        equalsCounter++;
+                        num1 = undefined;
+                        num2 = undefined;
+                        operand = undefined;    
+                        numberCounter = 0;
+                    }
+                }
+            } else { //the repetative equals pressing case
+                num1e = getNumber(display.textContent);
+                displayResults(operate(num1e, num2e, operande));
+                num1 = undefined;
+                num2 = undefined;
+                operand = undefined;    
+                numberCounter = 0;
+            }
+    
 });
 
-//next steps are to add basic functionality to all the dark grey buttons
-//once that is done, I will move on to only one decimal, max characters on screen, keyboard support and bugfixing
+negative.addEventListener("click", () => {
+        let x = getNumber(display.textContent);
+        x *= -1;
+        displayResults(x);
+    });
+
+allClear.addEventListener("click", () => {
+    //sets all variables we used to their initial states
+    num1 = undefined;
+    num2 = undefined;
+    operand = undefined;
+    numberCounter = 0;
+    nextNumber = false;
+    equalsCounter = 0;
+    num1e = undefined;
+    num2e = undefined;
+    operande = undefined;
+
+    display.textContent = "";
+    });
+backspace.addEventListener("click", () => {
+        let str = String(getNumber(display.textContent));
+        str = str.slice(0, str.length - 1);
+        displayResults(str);
+    });
+decimal.addEventListener("click", () => {
+        let num = getNumber(display.textContent);
+       if (!(String(num).includes("."))) {
+        let str = String(num);
+        str = str + ".";
+        displayResults(str);
+       };
+    });
+
+// only things left is keyboard support, bugfixing and making it prettier
+window.addEventListener("keydown", (eventobj) => {
+    if (eventobj.key === "1") {
+        one.click();
+    } else if (eventobj.key === "2") {
+        two.click();
+    } else if (eventobj.key === "3") {
+        three.click();
+    } else if (eventobj.key === "4") {
+        four.click();
+    } else if (eventobj.key === "5") {
+        five.click();
+    } else if (eventobj.key === "6") {
+        six.click();
+    } else if (eventobj.key === "7") {
+        seven.click();
+    } else if (eventobj.key === "8") {
+        eight.click();
+    } else if (eventobj.key === "9") {
+        nine.click();
+    } else if (eventobj.key === "0") {
+        zero.click();
+    } else if (eventobj.key === "*") {
+        multiplier.click();
+    } else if (eventobj.key === "/") {
+        divider.click();
+    } else if (eventobj.key === "+") {
+        plus.click();
+    } else if (eventobj.key === "=" || eventobj.key === "Enter" || eventobj.key === "Return") {
+        eventobj.preventDefault(); //prevents it from firing selected button apparantly
+        equals.click();
+    } else if (eventobj.key === "Backspace" || eventobj.key === "Delete") {
+        if (eventobj.shiftKey) {
+            allClear.click();
+        } else {
+            backspace.click();
+        }
+    } else if (eventobj.key === "-" || eventobj.key === "_") {
+        if (eventobj.shiftKey) {
+            negative.click();
+        } else {
+            minus.click();
+        }
+    } else if (eventobj.key === ".") {
+        decimal.click();
+    }
+});
